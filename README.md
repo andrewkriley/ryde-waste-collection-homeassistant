@@ -53,7 +53,7 @@ The container will automatically update your Home Assistant sensors every hour. 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/ryde-waste-collection.git
+git clone https://github.com/andrewkriley/ryde-waste-collection.git
 cd ryde-waste-collection
 ```
 
