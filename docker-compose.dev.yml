@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   ryde-waste-collection:
-    image: andreril/ryde-waste-collection:latest
+    build: .
     container_name: ryde-waste-collection
     restart: unless-stopped
     environment:
