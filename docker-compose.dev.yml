@@ -40,9 +40,6 @@ services:
       retries: 3
       start_period: 10s
     
-    # Volumes for debug files (optional)
-    volumes:
-      - ./debug:/tmp/debug
     
     # Logging
     logging:

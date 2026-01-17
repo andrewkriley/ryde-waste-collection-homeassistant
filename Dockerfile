@@ -40,14 +40,12 @@ COPY entrypoint.sh .
 # Make scripts executable
 RUN chmod +x entrypoint.sh ryde_mqtt_publisher.py
 
-# Create directory for debug files
-RUN mkdir -p /tmp/debug
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 
 # Run as non-root user for security
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app /tmp/debug
+RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
 # Health check - test MQTT connection
