@@ -116,7 +116,7 @@ def get_waste_schedule(geolocation_id):
     return None
 
 
-def get_waste_collection_info(address):
+def get_waste_collection_info(address, debug=False):
     """
     Main function to get waste collection information for an address.
     
