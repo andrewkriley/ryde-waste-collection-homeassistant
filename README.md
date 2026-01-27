@@ -100,7 +100,7 @@ Check out [docs/DASHBOARD_SETUP.md](docs/DASHBOARD_SETUP.md) for:
 - **[Installation Guide](INSTALLATION.md)** - Detailed setup instructions
 - **[Customization Guide](docs/CUSTOMIZATION.md)** - Colored icons and styling
 - **[Dashboard Setup](docs/DASHBOARD_SETUP.md)** - Card configurations
-- **[API Documentation](API_VALIDATION.md)** - Technical details
+- **[API Documentation](docs/API_VALIDATION.md)** - Technical details
 - **[Contributing](CONTRIBUTING.md)** - How to contribute
 
 ## 🐳 Docker/MQTT (Legacy)
