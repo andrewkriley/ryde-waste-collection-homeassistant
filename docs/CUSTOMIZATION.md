@@ -8,7 +8,7 @@ Make your waste collection icons change color automatically as collection day ap
 
 Icons will:
 - **Stay grey/blue** (default) when collection is more than 7 days away
-- **Turn to bin color** when collection is within 7 days
+- **Turn to bin color** when collection is within 7 days (including today!)
 - Match actual Ryde Council bin colors: 🔴 Red (General), 🟡 Yellow (Recycling), 🟢 Green (Garden)
 
 This helps you quickly see which bins need attention soon!
@@ -27,7 +27,8 @@ entity: sensor.ryde_waste_collection_general_waste
 name: General Waste
 icon: mdi:trash-can
 icon_color: |-
-  {% if state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') <= 7 %}
+  {% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') %}
+  {% if days is not none and days <= 7 %}
     red
   {% else %}
     grey
@@ -42,7 +43,8 @@ entity: sensor.ryde_waste_collection_recycling
 name: Recycling
 icon: mdi:recycle
 icon_color: |-
-  {% if state_attr('sensor.ryde_waste_collection_recycling', 'days_until') <= 7 %}
+  {% set days = state_attr('sensor.ryde_waste_collection_recycling', 'days_until') %}
+  {% if days is not none and days <= 7 %}
     yellow
   {% else %}
     grey
@@ -57,7 +59,8 @@ entity: sensor.ryde_waste_collection_garden_organics
 name: Garden Organics
 icon: mdi:leaf
 icon_color: |-
-  {% if state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') <= 7 %}
+  {% set days = state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') %}
+  {% if days is not none and days <= 7 %}
     green
   {% else %}
     grey
@@ -76,7 +79,8 @@ chips:
     entity: sensor.ryde_waste_collection_general_waste
     icon: mdi:trash-can
     icon_color: |-
-      {% if state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') <= 7 %}
+      {% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') %}
+      {% if days is not none and days <= 7 %}
         red
       {% else %}
         grey
@@ -90,7 +94,8 @@ chips:
     entity: sensor.ryde_waste_collection_recycling
     icon: mdi:recycle
     icon_color: |-
-      {% if state_attr('sensor.ryde_waste_collection_recycling', 'days_until') <= 7 %}
+      {% set days = state_attr('sensor.ryde_waste_collection_recycling', 'days_until') %}
+      {% if days is not none and days <= 7 %}
         yellow
       {% else %}
         grey
@@ -104,7 +109,8 @@ chips:
     entity: sensor.ryde_waste_collection_garden_organics
     icon: mdi:leaf
     icon_color: |-
-      {% if state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') <= 7 %}
+      {% set days = state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') %}
+      {% if days is not none and days <= 7 %}
         green
       {% else %}
         grey
@@ -133,7 +139,7 @@ styles:
     - color: |
         [[[
           const days = entity.attributes.days_until;
-          if (days <= 7) return 'red';
+          if (days !== null && days !== undefined && days <= 7) return 'red';
           return 'var(--primary-text-color)';
         ]]]
   card:
@@ -152,7 +158,7 @@ styles:
     - color: |
         [[[
           const days = entity.attributes.days_until;
-          if (days <= 7) return 'gold';
+          if (days !== null && days !== undefined && days <= 7) return 'gold';
           return 'var(--primary-text-color)';
         ]]]
   card:
@@ -171,7 +177,7 @@ styles:
     - color: |
         [[[
           const days = entity.attributes.days_until;
-          if (days <= 7) return 'green';
+          if (days !== null && days !== undefined && days <= 7) return 'green';
           return 'var(--primary-text-color)';
         ]]]
   card:
@@ -191,8 +197,9 @@ entities:
     card_mod:
       style: |
         :host {
+          {% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') %}
           --card-mod-icon-color: 
-            {% if state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') <= 7 %}
+            {% if days is not none and days <= 7 %}
               red
             {% else %}
               var(--primary-text-color)
@@ -203,8 +210,9 @@ entities:
     card_mod:
       style: |
         :host {
+          {% set days = state_attr('sensor.ryde_waste_collection_recycling', 'days_until') %}
           --card-mod-icon-color: 
-            {% if state_attr('sensor.ryde_waste_collection_recycling', 'days_until') <= 7 %}
+            {% if days is not none and days <= 7 %}
               gold
             {% else %}
               var(--primary-text-color)
@@ -215,8 +223,9 @@ entities:
     card_mod:
       style: |
         :host {
+          {% set days = state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') %}
           --card-mod-icon-color: 
-            {% if state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') <= 7 %}
+            {% if days is not none and days <= 7 %}
               green
             {% else %}
               var(--primary-text-color)
@@ -242,7 +251,8 @@ cards:
     name: General Waste
     icon: mdi:trash-can
     icon_color: |-
-      {% if state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') <= 7 %}
+      {% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') %}
+      {% if days is not none and days <= 7 %}
         red
       {% else %}
         grey
@@ -250,7 +260,8 @@ cards:
     primary_info: name
     secondary_info: state
     badge_icon: |-
-      {% if state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') <= 1 %}
+      {% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') %}
+      {% if days is not none and days <= 1 %}
         mdi:alert
       {% endif %}
     badge_color: red
@@ -262,7 +273,8 @@ cards:
     name: Recycling
     icon: mdi:recycle
     icon_color: |-
-      {% if state_attr('sensor.ryde_waste_collection_recycling', 'days_until') <= 7 %}
+      {% set days = state_attr('sensor.ryde_waste_collection_recycling', 'days_until') %}
+      {% if days is not none and days <= 7 %}
         yellow
       {% else %}
         grey
@@ -270,7 +282,8 @@ cards:
     primary_info: name
     secondary_info: state
     badge_icon: |-
-      {% if state_attr('sensor.ryde_waste_collection_recycling', 'days_until') <= 1 %}
+      {% set days = state_attr('sensor.ryde_waste_collection_recycling', 'days_until') %}
+      {% if days is not none and days <= 1 %}
         mdi:alert
       {% endif %}
     badge_color: yellow
@@ -282,7 +295,8 @@ cards:
     name: Garden Organics
     icon: mdi:leaf
     icon_color: |-
-      {% if state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') <= 7 %}
+      {% set days = state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') %}
+      {% if days is not none and days <= 7 %}
         green
       {% else %}
         grey
@@ -290,7 +304,8 @@ cards:
     primary_info: name
     secondary_info: state
     badge_icon: |-
-      {% if state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') <= 1 %}
+      {% set days = state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') %}
+      {% if days is not none and days <= 1 %}
         mdi:alert
       {% endif %}
     badge_color: green
@@ -300,12 +315,28 @@ cards:
 
 ---
 
+## Troubleshooting Grey Icons
+
+If all your icons are staying grey, check these:
+
+1. **Verify the attribute exists**: Go to Developer Tools → States, find your sensor, and check if `days_until` attribute is present
+2. **Check the value**: Make sure `days_until` is a number (0 for today, 1 for tomorrow, etc.)
+3. **Test the template**: Go to Developer Tools → Template and test:
+   ```jinja2
+   {% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') %}
+   Days until: {{ days }}
+   Should be colored: {{ days is not none and days <= 7 }}
+   ```
+
+---
+
 ## Customizing the Threshold
 
 Want to change when icons become colored? Just change the `7` to any number of days:
 
 ```yaml
-{% if state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') <= 3 %}
+{% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') %}
+{% if days is not none and days <= 3 %}
   red
 {% else %}
   grey
@@ -328,6 +359,8 @@ Matching actual Ryde Council bin colors:
 | General Waste | `red` | `grey` | ≤ 7 days |
 | Recycling | `yellow` | `grey` | ≤ 7 days |
 | Garden Organics | `green` | `grey` | ≤ 7 days |
+
+**Note**: `days_until` of 0 means collection is **today** - it will be colored!
 
 **Bonus**: Add alert badges when collection is tomorrow or today!
 
