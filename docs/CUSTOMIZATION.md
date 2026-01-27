@@ -11,17 +11,13 @@ Icons will:
 - **Turn to bin color** when collection is 7 days or fewer away (including today!)
 - Match actual Ryde Council bin colors: 🔴 Red (General), 🟡 Yellow (Recycling), 🟢 Green (Garden)
 
-This helps you quickly see which bins need attention soon!
-
 ---
 
 ## Full Dashboard Example
 
-This complete dashboard configuration uses Mushroom cards with dynamic colors. You'll need to install **Mushroom** from HACS (Frontend → Mushroom).
+This complete dashboard configuration uses Mushroom cards with dynamic colors. Install **Mushroom** from HACS (Frontend → Mushroom) first.
 
-### For a New Dashboard
-
-Copy and paste this entire configuration when creating a new dashboard:
+### Complete Dashboard YAML
 
 ```yaml
 title: Waste Collection
@@ -40,8 +36,8 @@ views:
             name: General Waste
             icon: mdi:trash-can
             icon_color: |-
-              {% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') %}
-              {% if days != none and days <= 7 %}
+              {% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') | int(-1) %}
+              {% if days >= 0 and days <= 7 %}
                 red
               {% else %}
                 grey
@@ -49,8 +45,8 @@ views:
             primary_info: name
             secondary_info: state
             badge_icon: |-
-              {% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') %}
-              {% if days != none and days <= 1 %}
+              {% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') | int(-1) %}
+              {% if days >= 0 and days <= 1 %}
                 mdi:alert
               {% endif %}
             badge_color: red
@@ -62,8 +58,8 @@ views:
             name: Recycling
             icon: mdi:recycle
             icon_color: |-
-              {% set days = state_attr('sensor.ryde_waste_collection_recycling', 'days_until') %}
-              {% if days != none and days <= 7 %}
+              {% set days = state_attr('sensor.ryde_waste_collection_recycling', 'days_until') | int(-1) %}
+              {% if days >= 0 and days <= 7 %}
                 yellow
               {% else %}
                 grey
@@ -71,8 +67,8 @@ views:
             primary_info: name
             secondary_info: state
             badge_icon: |-
-              {% set days = state_attr('sensor.ryde_waste_collection_recycling', 'days_until') %}
-              {% if days != none and days <= 1 %}
+              {% set days = state_attr('sensor.ryde_waste_collection_recycling', 'days_until') | int(-1) %}
+              {% if days >= 0 and days <= 1 %}
                 mdi:alert
               {% endif %}
             badge_color: yellow
@@ -84,8 +80,8 @@ views:
             name: Garden Organics
             icon: mdi:leaf
             icon_color: |-
-              {% set days = state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') %}
-              {% if days != none and days <= 7 %}
+              {% set days = state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') | int(-1) %}
+              {% if days >= 0 and days <= 7 %}
                 green
               {% else %}
                 grey
@@ -93,8 +89,8 @@ views:
             primary_info: name
             secondary_info: state
             badge_icon: |-
-              {% set days = state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') %}
-              {% if days != none and days <= 1 %}
+              {% set days = state_attr('sensor.ryde_waste_collection_garden_organics', 'days_until') | int(-1) %}
+              {% if days >= 0 and days <= 1 %}
                 mdi:alert
               {% endif %}
             badge_color: green
@@ -102,106 +98,141 @@ views:
               action: more-info
 ```
 
-### For Adding to Existing Dashboard
+### Key Template Syntax
 
-If you want to add just the cards to an existing dashboard, copy only the inner `vertical-stack` section (starting from `- type: vertical-stack`).
+The critical part is using the `| int(-1)` filter:
+
+```jinja2
+{% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') | int(-1) %}
+{% if days >= 0 and days <= 7 %}
+  red
+{% else %}
+  grey
+{% endif %}
+```
+
+This:
+- Converts `days_until` to an integer
+- Uses `-1` as default if the attribute is missing or None
+- Checks if days is between 0 and 7 (inclusive)
 
 ---
 
-## Troubleshooting Grey Icons
+## Troubleshooting
 
-If all your icons are staying grey even when `days_until` is 0-7, try these steps:
+### Step 1: Verify Your Sensors
 
-### 1. Verify the Attribute Exists
+Go to **Developer Tools** → **States** and find your sensors:
+- `sensor.ryde_waste_collection_general_waste`
+- `sensor.ryde_waste_collection_recycling`
+- `sensor.ryde_waste_collection_garden_organics`
 
-1. Go to **Developer Tools** → **States**
-2. Find `sensor.ryde_waste_collection_general_waste`
-3. Check if `days_until` attribute exists and has a numeric value
+Check that each sensor has a `days_until` attribute with a number value (e.g., 0, 3, 7).
 
-### 2. Test the Template
+### Step 2: Test the Template
 
-Go to **Developer Tools** → **Template** and test:
+Go to **Developer Tools** → **Template** and paste:
 
 ```jinja2
-{% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') %}
+{% set days = state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') | int(-1) %}
 Days until: {{ days }}
-Type: {{ days.__class__.__name__ }}
-Is None: {{ days == none }}
-Should color: {{ days != none and days <= 7 }}
+Days >= 0: {{ days >= 0 }}
+Days <= 7: {{ days <= 7 }}
+Should be colored: {{ days >= 0 and days <= 7 }}
+Result: {{ 'red' if (days >= 0 and days <= 7) else 'grey' }}
 ```
 
 Expected output when `days_until = 0`:
 ```
 Days until: 0
-Type: int
-Is None: False
-Should color: True
+Days >= 0: True
+Days <= 7: True
+Should be colored: True
+Result: red
 ```
 
-### 3. Alternative Template Syntax
+### Step 3: Try Alternative Templates
 
-If the standard template isn't working, try this alternative:
+If the main template still doesn't work, try these alternatives:
 
-```yaml
-icon_color: |-
-  {% if state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') != none and state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') <= 7 %}
-    red
-  {% else %}
-    grey
-  {% endif %}
-```
-
-Or use numeric comparison without variable:
-
+**Option A: One-liner with range**
 ```yaml
 icon_color: >-
-  {{ 'red' if (state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') or 999) <= 7 else 'grey' }}
+  {{ 'red' if (state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') | int(-1)) in range(0, 8) else 'grey' }}
 ```
 
-### 4. Check Mushroom Version
+**Option B: Using default filter**
+```yaml
+icon_color: >-
+  {{ 'red' if (state_attr('sensor.ryde_waste_collection_general_waste', 'days_until') | default(999) | int) <= 7 else 'grey' }}
+```
 
-Make sure you have the latest version of Mushroom cards:
+### Step 4: Clear Cache and Restart
+
+1. **Clear browser cache**: Ctrl+Shift+R (or Cmd+Shift+R on Mac)
+2. **Restart Home Assistant**: Settings → System → Restart
+3. **Update Mushroom**: HACS → Frontend → Mushroom → Update if available
+
+### Step 5: Check Mushroom Installation
+
+Make sure Mushroom cards are properly installed:
 1. Go to **HACS** → **Frontend**
-2. Find **Mushroom**
-3. Update if available
+2. Find **Mushroom** in your installed integrations
+3. If not installed, click **Explore & Download Repositories**, search for **Mushroom**, and install
+
+---
+
+## Common Issues
+
+### Icons Always Grey
+
+**Cause**: The template isn't evaluating correctly or `days_until` is missing.
+
+**Fix**: Use the `| int(-1)` filter version shown above. This is the most reliable.
+
+### Icons Show Wrong Color
+
+**Cause**: You may have copied the template incorrectly or there are extra spaces.
+
+**Fix**: Copy the exact YAML from above, ensuring proper indentation.
+
+### Sensors Don't Exist
+
+**Cause**: Integration not configured or sensors failed to load.
+
+**Fix**: 
+1. Go to Settings → Devices & Services
+2. Find "Ryde Waste Collection"
+3. Click Configure and verify your address
 4. Restart Home Assistant
-
-### 5. Clear Browser Cache
-
-Sometimes cached card configurations cause issues:
-1. Clear your browser cache
-2. Hard refresh (Ctrl+Shift+R or Cmd+Shift+R)
-3. Reopen the dashboard
 
 ---
 
 ## Customizing the Threshold
 
-Want to change when icons become colored? Adjust the number in the comparison:
+Change when icons become colored by adjusting the number:
 
-**3 days notice** (collection very soon):
+**3 days notice**:
 ```yaml
-{% if days != none and days <= 3 %}
+{% if days >= 0 and days <= 3 %}
 ```
 
-**14 days notice** (two weeks ahead):
+**14 days notice**:
 ```yaml
-{% if days != none and days <= 14 %}
+{% if days >= 0 and days <= 14 %}
 ```
 
 ---
 
-## Color Reference
+## Why Use `| int(-1)`?
 
-Matching actual Ryde Council bin colors:
+The `| int(-1)` filter is crucial because:
+1. **Type safety**: Ensures the value is always an integer
+2. **None handling**: Converts None to -1 (which is < 0, so always grey)
+3. **Reliability**: Works consistently across all Home Assistant versions
+4. **Range check**: `days >= 0` ensures we ignore the -1 default
 
-| Waste Type | When Colored | Icon Color | Otherwise |
-|------------|--------------|------------|-----------|
-| General Waste | 0-7 days | `red` | `grey` |
-| Recycling | 0-7 days | `yellow` | `grey` |
-| Garden Organics | 0-7 days | `green` | `grey` |
-
-**Note**: `days_until = 0` means collection is **today** - it will show colored!
+This is the recommended approach for Mushroom card templates.
 
 ---
 
@@ -217,11 +248,12 @@ Matching actual Ryde Council bin colors:
 
 ---
 
-## Why Dynamic Colors?
+## Color Reference
 
-- **At a glance**: Quickly see which bins are due soon
-- **Less clutter**: Icons only stand out when relevant
-- **Smart reminders**: Visual cue without notifications
-- **Customizable**: Adjust the threshold to your preference
+| Waste Type | When Colored | Icon Color | Otherwise |
+|------------|--------------|------------|-----------|
+| General Waste | 0-7 days | `red` | `grey` |
+| Recycling | 0-7 days | `yellow` | `grey` |
+| Garden Organics | 0-7 days | `green` | `grey` |
 
-The icons will automatically update as collection day approaches!
+**Note**: `days_until = 0` means collection is **today** - it will show colored!
