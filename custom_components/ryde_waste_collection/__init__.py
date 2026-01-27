@@ -1,6 +1,7 @@
 """The Ryde Waste Collection integration."""
 from __future__ import annotations
 
+from datetime import timedelta
 import logging
 
 from homeassistant.config_entries import ConfigEntry
@@ -18,7 +19,13 @@ PLATFORMS: list[Platform] = [Platform.SENSOR]
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Ryde Waste Collection from a config entry."""
     address = entry.data[CONF_ADDRESS]
-    scan_interval = entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    
+    # Get scan interval from options (in hours) and convert to timedelta
+    scan_interval_hours = entry.options.get(
+        CONF_SCAN_INTERVAL,
+        DEFAULT_SCAN_INTERVAL.total_seconds() / 3600
+    )
+    scan_interval = timedelta(hours=scan_interval_hours)
 
     coordinator = RydeWasteCollectionCoordinator(
         hass,
