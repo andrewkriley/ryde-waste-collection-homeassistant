@@ -139,13 +139,14 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 MIT License - see [LICENSE](LICENSE) for details.
 
+
 ## 🙏 Credits
 
 - **Author**: Andrew Riley
+- **Inspiration**: This integration was inspired by [mampfes/hacs_waste_collection_schedule](https://github.com/mampfes/hacs_waste_collection_schedule/blob/master/doc/source/ryde_nsw_gov_au.md), particularly their Ryde Council implementation
 - **Data Source**: Ryde Council public APIs
 - **Community**: Home Assistant community for integration frameworks
 - **Contributors**: All contributors and users
-
 ## 💬 Support
 
 - 🐛 [Report an Issue](https://github.com/andrewkriley/ryde-waste-collection-homeassistant/issues)

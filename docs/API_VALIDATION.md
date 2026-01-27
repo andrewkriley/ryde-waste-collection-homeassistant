@@ -1,8 +1,34 @@
 # Ryde Council Waste Collection - API Documentation
 
-## Overview
 This project uses Ryde Council's public APIs to retrieve waste collection schedules. This approach replaced the previous Selenium-based screen scraping method for improved reliability and performance.
 
+
+This implementation was inspired by [mampfes/hacs_waste_collection_schedule](https://github.com/mampfes/hacs_waste_collection_schedule/blob/master/doc/source/ryde_nsw_gov_au.md) Ryde Council integration.
+
+Two API calls are required to retrieve waste collection schedule results from Ryde Council:
+
+1. **Address Search API** at `https://www.ryde.nsw.gov.au/api/v1/myarea/search`
+2. **Waste Services API** at `https://www.ryde.nsw.gov.au/ocapi/Public/myarea/wasteservices`
+
+### Process Flow
+
+The integration performs the following steps:
+
+1. **Address Search**: Calls the address search API to retrieve the "location ID" for the given address
+   - Example: `https://www.ryde.nsw.gov.au/api/v1/myarea/search?keywords=504+Victoria+Road%2C+Ryde`
+   - Returns a `geolocationid` (e.g., `619ef4ca-45e2-4866-a55b-165e6d563943`)
+
+2. **Waste Schedule Retrieval**: Uses the location ID from step 1 to query the waste services API
+   - Example: `https://www.ryde.nsw.gov.au/ocapi/Public/myarea/wasteservices?geolocationid=619ef4ca-45e2-4866-a55b-165e6d563943&ocsvclang=en-AU`
+   - Returns HTML content with collection dates
+
+3. **Data Parsing**: Extracts waste collection dates from the HTML response
+   - Parses dates for General Waste, Recycling, and Garden Organics
+   - Converts dates to Home Assistant sensor format
+
+### Technical Implementation
+
+The integration maintains this API approach for reliability and performance. If Ryde Council's APIs change in the future, the integration may need updates.
 ## API Endpoints
 
 ### 1. Address Search API
