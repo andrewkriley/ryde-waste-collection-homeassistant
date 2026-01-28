@@ -1,5 +1,12 @@
 # Customization Guide
 
+## 📸 Example
+
+![Dashboard Example](images/dashboard-example.png)
+
+*Dynamic icon colors automatically change when collection is within 7 days.*
+
+
 ## Dynamic Icon Colors
 
 Make your waste collection icons change color automatically as collection day approaches!

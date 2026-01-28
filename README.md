@@ -20,6 +20,12 @@ This is an **unofficial** integration created by Andrew Riley. It is **not affil
 
 ---
 
+## 📸 Dashboard Example
+
+![Dashboard Example](docs/images/dashboard-example.png)
+
+*Dynamic icon colors show which bins are due for collection within the next 7 days.*
+
 ## ✨ Features
 
 - 🗑️ **Three Waste Types**: General Waste, Recycling, and Garden Organics
