@@ -62,7 +62,7 @@ Restart Home Assistant after installation.
 1. Go to **Settings** → **Devices & Services**
 2. Click **+ Add Integration**
 3. Search for **"Ryde Waste Collection"**
-4. Enter your Ryde LGA address (e.g., "129 Blaxland Road, Ryde")
+4. Enter your Ryde LGA address (e.g., "129 Blaxland Road Ryde 2112")
 5. Click **Submit**
 
 **Note**: During setup, you'll see a disclaimer that this is an unofficial integration.
