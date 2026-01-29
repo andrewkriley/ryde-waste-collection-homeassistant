@@ -1,9 +1,6 @@
 {
   "name": "Ryde Waste Collection",
+  "content_in_root": false,
   "country": ["AU"],
-  "domains": ["sensor"],
-  "homeassistant": "2024.1.0",
-  "render_readme": true,
-  "zip_release": false,
-  "filename": false
+  "render_readme": true
 }
