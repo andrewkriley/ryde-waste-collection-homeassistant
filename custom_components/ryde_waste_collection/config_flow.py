@@ -32,7 +32,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 async def validate_address(hass: HomeAssistant, address: str) -> dict[str, Any]:
     """Validate the address by checking if it exists in Ryde Council's system.
     
-    Address should be in the format: '129 Victoria Road Ryde 2112'
+    Address should be in the format: '129 Blaxland Road Ryde 2112'
     Do not include NSW in the address.
     """
     params = {"keywords": address}
